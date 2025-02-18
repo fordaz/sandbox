@@ -1,0 +1,5 @@
+data/persistence_0/
+data/persistence_1/
+__pycache__/
+.env/
+.idea/
