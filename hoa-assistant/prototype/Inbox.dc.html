@@ -1,0 +1,1019 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Manager Inbox</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F3F4F6}
+*{box-sizing:border-box}
+button{font:inherit;cursor:pointer}
+a{color:#2147C4}a:hover{color:#1B3BA8}
+.navbtn{background:transparent;border:0;color:#C9D1D9;height:34px;padding:0 12px;border-radius:6px;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:8px}
+.navbtn.on{background:#2A3542;color:#fff}
+.navcount{background:#FFE14D;color:#18212B;border-radius:999px;font-size:11px;font-weight:600;padding:1px 7px}
+.ftab{border:0;background:transparent;height:36px;padding:0 12px;border-radius:8px;font-size:13px;font-weight:500;color:#3F4852;display:inline-flex;gap:8px;align-items:center}
+.ftab:hover{background:#E8EBEE}
+.ftab.on{background:#18212B;color:#fff}
+.ftab .n{font-size:11px;font-weight:600;opacity:.8}
+.qgrid{display:grid;grid-template-columns:minmax(210px,1.25fr) minmax(260px,2.6fr) 180px 100px 120px 110px;gap:16px;align-items:center}
+.qhead{padding:10px 20px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#4A545E;background:#F7F8F9}
+.qrow{width:100%;text-align:left;background:#fff;border:0;border-top:1px solid #E8EBEE;padding:14px 20px;color:#18212B;min-height:72px;font-size:13px}
+.qrow:hover{background:#F5F7FB}
+.qrow.unread .qname{font-weight:700}
+.qname{font-weight:500;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qsub{font-size:12px;color:#4A545E}
+.snip{color:#3F4852;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.45}
+.ch{width:34px;height:34px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.ch-wa{background:#E3F2E9;color:#1A5E37}
+.ch-email{background:#E6ECFB;color:#1B3BA8}
+.ch-int{background:#F0EAFB;color:#5B3A9E}
+.udot{width:8px;height:8px;border-radius:50%;background:#2147C4;flex:none}
+.udot.read{background:transparent}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;line-height:1.4;white-space:nowrap}
+.tone-green{background:#E3F2E9;color:#1A5E37}
+.tone-blue{background:#E6ECFB;color:#1B3BA8}
+.tone-amber{background:#FFEFC7;color:#6E4600}
+.tone-gray{background:#ECEEF0;color:#3F4852}
+.tone-purple{background:#F0EAFB;color:#5B3A9E}
+.tone-red{background:#FDE7E4;color:#9B2C1F}
+.win{font-size:12px;color:#3F4852}
+.win.warn{color:#9B2C1F;font-weight:600}
+.tab{border:0;background:transparent;padding:0 12px;height:44px;color:#4A545E;font-size:13px;font-weight:500;border-bottom:2px solid transparent;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.tab:hover{color:#18212B}
+.tab.on{color:#18212B;border-bottom-color:#18212B}
+.dot{width:7px;height:7px;border-radius:50%;background:#D9A900;display:inline-block}
+.iconbtn{width:32px;height:32px;border:1px solid #CDD3D9;background:#fff;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;color:#18212B;padding:0}
+.iconbtn:hover{border-color:#9AA6B2}
+.iconbtn:disabled{opacity:.4;cursor:default}
+.clause{position:relative;padding:8px 12px;margin:0 -12px 12px;border-radius:4px;transition:background-color .5s ease,box-shadow .5s ease}
+.clause.hl{background:#FFF3B0}
+.clause.hl.on{background:#FFE14D;box-shadow:0 0 0 2px #D9A900;animation:pulse 1.6s ease-out 1}
+@keyframes pulse{0%{box-shadow:0 0 0 2px #D9A900,0 0 0 0 rgba(217,169,0,.6)}100%{box-shadow:0 0 0 2px #D9A900,0 0 0 16px rgba(217,169,0,0)}}
+.marker{position:absolute;left:-44px;top:9px;width:24px;height:24px;border-radius:50%;background:#18212B;color:#fff;font:600 12px/24px 'IBM Plex Sans',sans-serif;text-align:center}
+.srcchip{border:1px solid #CDD3D9;background:#fff;border-radius:6px;padding:3px 10px;font-size:12px;color:#18212B;display:inline-flex;gap:6px;align-items:center;min-height:30px}
+.srcchip:hover{border-color:#9AA6B2}
+.srcchip.on{background:#FFE14D;border-color:#D9A900}
+.cite{border:1px solid #B9C6EE;background:#EEF2FD;color:#1B3BA8;border-radius:4px;font:600 11px/16px 'IBM Plex Sans',sans-serif;min-width:20px;height:18px;padding:0 5px;margin:0 1px 0 3px;vertical-align:1px}
+.cite:hover,.cite.on{background:#FFE14D;border-color:#D9A900;color:#18212B}
+.dpara{margin:0 0 12px;line-height:1.6;white-space:pre-line;border-radius:4px;transition:background-color 1.5s ease,box-shadow 1.5s ease}
+.dpara.fresh{background:#FFF3B0;box-shadow:0 0 0 6px #FFF3B0}
+.dpara.hold{color:#3F4852}
+.seg{border:0;background:transparent;padding:0 10px;height:28px;border-radius:6px;font-size:12px;font-weight:500;color:#4A545E}
+.seg.on{background:#fff;color:#18212B;box-shadow:0 1px 2px rgba(16,24,40,.14)}
+.seg:disabled{opacity:.5;cursor:default}
+.primary{background:#2147C4;color:#fff;border:0;border-radius:8px;padding:0 16px;min-height:38px;font-weight:600;font-size:13px;display:inline-flex;align-items:center;gap:8px}
+.primary:hover{background:#1B3BA8}
+.ghost{background:#fff;color:#18212B;border:1px solid #CDD3D9;border-radius:8px;padding:0 14px;min-height:38px;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:6px}
+.ghost:hover{border-color:#9AA6B2}
+.ghost.sm,.primary.sm{min-height:30px;padding:0 10px;font-size:12px}
+.linkbtn{background:transparent;border:0;color:#1B3BA8;font-size:12px;font-weight:600;padding:0 4px;min-height:28px}
+.splitter{flex:none;height:14px;border:0;border-bottom:1px solid #E1E4E8;background:#F3F4F6;cursor:row-resize;align-items:center;justify-content:center;touch-action:none;padding:0;width:100%}
+.splitter span{width:44px;height:4px;border-radius:2px;background:#AEB8C2;display:block}
+.splitter:focus-visible{outline:2px solid #2147C4;outline-offset:-2px}
+.incl{border:1px solid #B9C6EE;background:#fff;color:#1B3BA8;border-radius:8px;min-height:32px;padding:0 12px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.incl:hover{background:#EEF2FD}
+.indraft{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 10px;font-size:12px;font-weight:600;color:#1A5E37;background:#E3F2E9;border-radius:8px}
+.aicard{border:1px solid #E1E4E8;border-radius:12px;background:#fff;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.sugg{border:1px dashed #AEB8C2;background:#fff;border-radius:999px;padding:5px 12px;min-height:32px;font-size:12px;color:#18212B}
+.sugg:hover{border-color:#2147C4;color:#1B3BA8;border-style:solid}
+.sugg:disabled{opacity:.5;cursor:default}
+.dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:#4A545E;margin-right:4px;animation:blink 1.2s infinite}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+.ask:focus-within{border-color:#2147C4;box-shadow:0 0 0 3px #E6ECFB}
+.askinput:focus,.edittext:focus,.search:focus{outline:none}
+.search:focus{border-color:#2147C4;box-shadow:0 0 0 3px #E6ECFB}
+.send{width:38px;height:38px;border:0;border-radius:8px;background:#2147C4;color:#fff;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.send:disabled{background:#B7C1D1;cursor:default}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#18212B;color:#fff;padding:12px 16px;border-radius:10px;font-size:13px;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(16,24,40,.25);z-index:50}
+@media (max-width:900px){.app{height:auto !important;min-height:0 !important}.split{flex-direction:column !important}.docpane{border-right:0 !important}.rightpane{flex:none !important;width:100% !important}.docscroll{max-height:70vh;padding:16px !important}.sheet{padding:32px 20px 32px 52px !important;min-height:0 !important}.hide-sm{display:none !important}.qmain{padding:16px !important}}
+</style>
+</helmet>
+<div class="app" style="height: 100vh; min-height: 640px; display: flex; flex-direction: column; background: #F3F4F6; color: #18212B; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px">
+
+  <header style="height: 56px; flex: none; display: flex; align-items: center; gap: 14px; padding: 0 20px; background: #18212B; color: #fff">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true"><rect x="4" y="2.5" width="15" height="20" rx="2" stroke="#fff" stroke-width="1.6"></rect><path d="M8 8h7M8 12h7M8 16h4" stroke="#fff" stroke-width="1.6" stroke-linecap="round"></path><circle cx="19.5" cy="19.5" r="4.5" fill="#FFE14D"></circle><path d="M17.6 19.6l1.3 1.3 2.4-2.6" stroke="#18212B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      <span style="font-weight: 600; font-size: 15px; letter-spacing: -0.01em">CC&amp;R Assistant</span>
+    </div>
+    <div class="hide-sm" style="width: 1px; height: 24px; background: #3A4552"></div>
+    <nav aria-label="Main" style="display: flex; gap: 4px">
+      <button type="button" class="navbtn on" onClick="{{goQueue}}">Inbox <span class="navcount">{{openCount}}</span></button>
+      <button type="button" class="navbtn hide-sm">Documents</button>
+    </nav>
+    <div style="flex: 1"></div>
+    <div class="hide-sm" style="display: flex; align-items: center; gap: 8px; color: #C9D1D9; font-size: 12px">
+      <span style="width: 8px; height: 8px; border-radius: 50%; background: #4CC38A; display: inline-block"></span>
+      Willow Creek Estates HOA · 4 documents · 86 pages indexed
+    </div>
+    <div aria-label="Signed in as property manager" role="img" style="width: 32px; height: 32px; border-radius: 50%; background: #E6ECFB; color: #1B3BA8; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">PM</div>
+  </header>
+
+  <!-- ============ QUEUE SCREEN ============ -->
+  <main class="qmain" aria-label="Inbox" style="display: {{queueDisplay}}; flex: 1; min-height: 0; overflow: auto; padding: 28px 32px 40px">
+    <div style="max-width: 1320px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+        <div>
+          <h1 style="margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -0.02em">Inbox</h1>
+          <div style="color: #4A545E; margin-top: 4px">{{queueSummary}}</div>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap">
+          <label for="q-search" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search messages</label>
+          <input id="q-search" class="search" type="search" placeholder="Search name, lot or message" value="{{search}}" onChange="{{onSearch}}" style="height: 38px; width: 260px; border: 1px solid #CDD3D9; border-radius: 8px; padding: 0 12px; font: inherit; font-size: 13px; background: #fff">
+          <button type="button" class="primary" onClick="{{newQuestion}}"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 2.5v9M2.5 7h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>New question</button>
+        </div>
+      </div>
+
+      <div role="tablist" aria-label="Filter messages" style="display: flex; gap: 4px; flex-wrap: wrap">
+        <sc-for list="{{filters}}" as="f" hint-placeholder-count="5">
+          <button type="button" role="tab" class="{{f.cls}}" aria-selected="{{f.selected}}" onClick="{{f.pick}}">{{f.label}} <span class="n">{{f.count}}</span></button>
+        </sc-for>
+      </div>
+
+      <div style="background: #fff; border: 1px solid #E1E4E8; border-radius: 12px; overflow: hidden">
+        <div style="overflow-x: auto">
+          <div style="min-width: 1000px">
+            <div class="qgrid qhead">
+              <span>From</span><span>Message</span><span>Status</span><span>Sources</span><span>Received</span><span>Reply window</span>
+            </div>
+            <sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+              <button type="button" class="{{r.cls}}" onClick="{{r.open}}">
+                <span class="qgrid">
+                  <span style="display: flex; gap: 10px; align-items: center; min-width: 0">
+                    <span class="{{r.dotCls}}" aria-hidden="true"></span>
+                    <span class="{{r.chCls}}" aria-label="{{r.channelLabel}}" role="img">
+                      <sc-if value="{{r.isWa}}" hint-placeholder-val="{{true}}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.8 13.2l.9-2.6A5.6 5.6 0 1 1 6 12.4l-3.2.8z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg></sc-if>
+                      <sc-if value="{{r.isEmail}}" hint-placeholder-val="{{false}}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2" y="3.5" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"></rect><path d="M2.6 4.6L8 8.6l5.4-4" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg></sc-if>
+                      <sc-if value="{{r.isInternal}}" hint-placeholder-val="{{false}}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3.5" y="7" width="9" height="6.5" rx="1.2" stroke="currentColor" stroke-width="1.4"></rect><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" stroke-width="1.4"></path></svg></sc-if>
+                    </span>
+                    <span style="display: flex; flex-direction: column; min-width: 0">
+                      <span class="qname">{{r.name}}</span>
+                      <span class="qsub">{{r.where}}</span>
+                    </span>
+                  </span>
+                  <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+                    <sc-if value="{{r.hasSubject}}" hint-placeholder-val="{{false}}"><span style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.subject}}</span></sc-if>
+                    <span class="snip">{{r.snippet}}</span>
+                  </span>
+                  <span style="display: flex; gap: 6px; flex-wrap: wrap">
+                    <span class="{{r.pillCls}}">{{r.status}}</span>
+                    <sc-if value="{{r.urgent}}" hint-placeholder-val="{{false}}"><span class="pill tone-red">Urgent</span></sc-if>
+                  </span>
+                  <span class="qsub">{{r.cited}}</span>
+                  <span style="display: flex; flex-direction: column"><span>{{r.time}}</span><span class="qsub">{{r.ago}}</span></span>
+                  <span class="{{r.winCls}}">{{r.window}}</span>
+                </span>
+              </button>
+            </sc-for>
+            <sc-if value="{{noRows}}" hint-placeholder-val="{{false}}">
+              <div style="padding: 40px 20px; text-align: center; color: #4A545E; border-top: 1px solid #E8EBEE">Nothing here. Every message in this view has been handled.</div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 18px; flex-wrap: wrap; font-size: 12px; color: #4A545E">
+        <span>Connected: Email · management@[YOUR DOMAIN]</span>
+        <span>WhatsApp Business · [YOUR NUMBER]</span>
+        <span>Residents matched by email or phone against the resident roster</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ ANSWER SCREEN ============ -->
+  <div style="display: {{answerDisplay}}; flex: 1; min-height: 0; flex-direction: column">
+    <div style="flex: none; min-height: 56px; display: flex; align-items: center; gap: 14px; padding: 8px 20px; background: #fff; border-bottom: 1px solid #DCE0E4; flex-wrap: wrap">
+      <button type="button" class="ghost sm" onClick="{{goQueue}}"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M8.5 3L4.5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>Inbox</button>
+      <div style="display: flex; align-items: center; gap: 6px">
+        <button type="button" class="iconbtn" onClick="{{prevCase}}" disabled="{{prevCaseDisabled}}" aria-label="Previous message"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M8.5 3L4.5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+        <span style="font-size: 13px; color: #3F4852; min-width: 56px; text-align: center; font-variant-numeric: tabular-nums">{{caseIndex}}</span>
+        <button type="button" class="iconbtn" onClick="{{nextCase}}" disabled="{{nextCaseDisabled}}" aria-label="Next message"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M5.5 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+      </div>
+      <div style="width: 1px; height: 28px; background: #E1E4E8"></div>
+      <div style="display: flex; align-items: center; gap: 10px; min-width: 0">
+        <span class="{{cur.chCls}}" aria-hidden="true">
+          <sc-if value="{{cur.isWa}}" hint-placeholder-val="{{true}}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2.8 13.2l.9-2.6A5.6 5.6 0 1 1 6 12.4l-3.2.8z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg></sc-if>
+          <sc-if value="{{cur.isEmail}}" hint-placeholder-val="{{false}}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3.5" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"></rect><path d="M2.6 4.6L8 8.6l5.4-4" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg></sc-if>
+          <sc-if value="{{cur.isInternal}}" hint-placeholder-val="{{false}}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3.5" y="7" width="9" height="6.5" rx="1.2" stroke="currentColor" stroke-width="1.4"></rect><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" stroke-width="1.4"></path></svg></sc-if>
+        </span>
+        <div style="min-width: 0">
+          <div style="font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{cur.name}}</div>
+          <div style="font-size: 12px; color: #4A545E">{{cur.detail}}</div>
+        </div>
+      </div>
+      <div style="flex: 1"></div>
+      <span class="{{cur.pillCls}}">{{cur.status}}</span>
+      <sc-if value="{{cur.hasWindow}}" hint-placeholder-val="{{true}}">
+        <span class="{{cur.winCls}}" style="display: inline-flex; align-items: center; gap: 6px"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5.3" stroke="currentColor" stroke-width="1.3"></circle><path d="M7 4v3.2l2 1.3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>{{cur.window}} to reply on WhatsApp</span>
+      </sc-if>
+    </div>
+
+    <div class="split" style="flex: 1; min-height: 0; display: flex">
+      <section class="docpane" aria-label="Source document viewer" style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; background: #E4E7EA; border-right: 1px solid #D3D8DD">
+        <div style="flex: none; display: flex; align-items: center; gap: 12px; padding: 0 16px 0 8px; background: #fff; border-bottom: 1px solid #DCE0E4; flex-wrap: wrap">
+          <nav aria-label="Documents" style="display: flex; flex: 1; min-width: 0; overflow-x: auto">
+            <sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+              <button type="button" class="{{t.cls}}" onClick="{{t.pick}}">{{t.name}}<sc-if value="{{t.cited}}" hint-placeholder-val="{{false}}"><span class="dot" aria-label="cited"></span></sc-if></button>
+            </sc-for>
+          </nav>
+          <div style="display: flex; align-items: center; gap: 8px; padding: 6px 0">
+            <button type="button" class="iconbtn" onClick="{{prevPage}}" disabled="{{prevPageDisabled}}" aria-label="Previous page"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M8.5 3L4.5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+            <span style="font-size: 13px; min-width: 92px; text-align: center; font-variant-numeric: tabular-nums">Page {{pageNum}} of {{pageCount}}</span>
+            <button type="button" class="iconbtn" onClick="{{nextPage}}" disabled="{{nextPageDisabled}}" aria-label="Next page"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M5.5 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+          </div>
+        </div>
+        <div style="flex: none; min-height: 46px; display: flex; align-items: center; gap: 8px; padding: 7px 16px; background: #F7F8F9; border-bottom: 1px solid #DCE0E4; flex-wrap: wrap; font-size: 12px; color: #4A545E">
+          <sc-if value="{{showSources}}" hint-placeholder-val="{{true}}">
+            <span style="font-weight: 600; color: #18212B">Cited in this case</span>
+            <sc-for list="{{stripSources}}" as="s" hint-placeholder-count="3">
+              <button type="button" class="{{s.cls}}" onClick="{{s.go}}"><span style="font-weight: 600">{{s.n}}</span>{{s.label}}</button>
+            </sc-for>
+          </sc-if>
+          <sc-if value="{{showNoSources}}" hint-placeholder-val="{{false}}">
+            <span>No clause cited yet. Ask a question and the clause behind each answer is highlighted here.</span>
+          </sc-if>
+        </div>
+        <div class="docscroll" ref="{{setDocEl}}" style="flex: 1; min-height: 0; overflow: auto; padding: 28px 36px 64px">
+          <article class="sheet" aria-label="{{sheetLabel}}" style="max-width: 780px; margin: 0 auto; background: #fff; padding: 60px 72px 40px 88px; box-shadow: 0 1px 3px rgba(16,24,40,.12), 0 10px 28px rgba(16,24,40,.08); font-family: 'Source Serif 4', Georgia, serif; color: #1E1E1E; font-size: 15px; line-height: 1.7; min-height: 980px; display: flex; flex-direction: column">
+            <div style="display: flex; justify-content: space-between; gap: 16px; font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: #5B6670; border-bottom: 1px solid #E1E4E8; padding-bottom: 10px; margin-bottom: 32px">
+              <span>Willow Creek Estates HOA</span><span>{{docFull}}</span>
+            </div>
+            <div style="text-align: center; margin-bottom: 26px">
+              <div style="font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #3F4852">{{page.article}}</div>
+              <h2 style="margin: 4px 0 0; font-size: 23px; font-weight: 600; color: #111">{{page.heading}}</h2>
+            </div>
+            <sc-if value="{{page.isToc}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-direction: column; gap: 10px">
+                <sc-for list="{{page.toc}}" as="r" hint-placeholder-count="10">
+                  <div style="display: flex; align-items: baseline; gap: 10px"><span style="width: 104px; flex: none; color: #3F4852">{{r.label}}</span><span>{{r.title}}</span><span style="flex: 1; border-bottom: 1px dotted #B5BCC3; transform: translateY(-4px)"></span><span>{{r.pg}}</span></div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{page.isBody}}" hint-placeholder-val="{{true}}">
+              <div>
+                <sc-for list="{{page.clauses}}" as="c" hint-placeholder-count="4">
+                  <div class="{{c.cls}}">
+                    <sc-if value="{{c.hasMarker}}" hint-placeholder-val="{{false}}"><span class="marker" aria-hidden="true">{{c.n}}</span></sc-if>
+                    <p style="margin: 0; text-align: justify; hyphens: auto"><strong style="font-weight: 600">{{c.ref}}. {{c.title}}.</strong> {{c.text}}</p>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <div style="flex: 1"></div>
+            <div style="text-align: center; font-size: 13px; color: #5B6670; padding-top: 32px">– {{pageNum}} –</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="rightpane" aria-label="Reply and case conversation" style="flex: 0 0 540px; width: 540px; min-height: 0; display: flex; flex-direction: column; background: #fff">
+        <!-- Draft -->
+        <div style="display: {{draftDisplay}}; flex: none; height: {{draftH}}px; min-height: 0; flex-direction: column">
+          <div style="flex: none; display: flex; align-items: center; gap: 10px; padding: 12px 20px 8px">
+            <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #4A545E">{{draftTitle}}</span>
+            <span class="{{draftChannelCls}}">{{draftChannel}}</span>
+            <div style="flex: 1"></div>
+            <sc-if value="{{hasUndo}}" hint-placeholder-val="{{false}}">
+              <span style="font-size: 12px; color: #6E4600">Added to draft</span><button type="button" class="linkbtn" onClick="{{undo}}">Undo</button>
+            </sc-if>
+            <sc-if value="{{notSent}}" hint-placeholder-val="{{true}}">
+              <button type="button" class="ghost sm" onClick="{{toggleEdit}}" aria-pressed="{{editing}}"><svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2.5 11.5l.6-2.6 6.6-6.6 2 2-6.6 6.6-2.6.6z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"></path></svg>{{editLabel}}</button>
+            </sc-if>
+          </div>
+          <sc-if value="{{isEmailDraft}}" hint-placeholder-val="{{false}}">
+            <div style="flex: none; padding: 0 20px 8px; font-size: 12px; color: #4A545E; display: flex; flex-direction: column; gap: 2px">
+              <span>To: {{emailTo}}</span><span>Subject: <span style="color: #18212B; font-weight: 500">{{emailSubject}}</span></span>
+            </div>
+          </sc-if>
+          <div style="flex: 1; min-height: 0; overflow: auto; padding: 6px 20px 4px">
+            <sc-if value="{{editing}}" hint-placeholder-val="{{false}}">
+              <label for="draft-edit" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Edit draft reply</label>
+              <textarea id="draft-edit" class="edittext" value="{{editText}}" onChange="{{onEditText}}" style="width: 100%; height: 100%; min-height: 160px; border: 1px solid #2147C4; box-shadow: 0 0 0 3px #E6ECFB; border-radius: 8px; padding: 10px 12px; font: inherit; font-size: 14px; line-height: 1.6; resize: none; color: #18212B"></textarea>
+            </sc-if>
+            <sc-if value="{{notEditing}}" hint-placeholder-val="{{true}}">
+              <div>
+                <sc-for list="{{draftParas}}" as="p" hint-placeholder-count="3">
+                  <p class="{{p.cls}}"><sc-for list="{{p.parts}}" as="t" hint-placeholder-count="2"><span>{{t.text}}</span><button type="button" class="{{t.cls}}" hidden="{{t.notCite}}" onClick="{{t.go}}" aria-label="{{t.aria}}">{{t.n}}</button></sc-for></p>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+          <div style="flex: none; display: flex; align-items: center; gap: 10px; padding: 10px 20px 12px; border-top: 1px solid #EEF0F2; flex-wrap: wrap">
+            <span class="{{checkCls}}">{{checkText}}</span>
+            <div style="flex: 1"></div>
+            <sc-if value="{{notSent}}" hint-placeholder-val="{{true}}">
+              <div role="group" aria-label="Tone" style="display: inline-flex; background: #EEF0F2; border-radius: 8px; padding: 2px">
+                <button type="button" class="{{friendlyCls}}" onClick="{{setFriendly}}" disabled="{{toneDisabled}}">Friendly</button>
+                <button type="button" class="{{formalCls}}" onClick="{{setFormal}}" disabled="{{toneDisabled}}">Formal</button>
+              </div>
+              <button type="button" class="ghost" onClick="{{save}}">Save</button>
+              <button type="button" class="primary" onClick="{{reply}}">{{replyLabel}}<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2.5 7h8.5M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+            </sc-if>
+          </div>
+        </div>
+        <button type="button" class="splitter" style="display: {{draftFlex}}" aria-label="Resize draft. Drag, or use the up and down arrow keys" onPointerDown="{{startDrag}}" onPointerMove="{{moveDrag}}" onPointerUp="{{endDrag}}" onKeyDown="{{dragKey}}"><span></span></button>
+
+        <!-- Case conversation -->
+        <div style="flex: none; display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-bottom: 1px solid #EEF0F2">
+          <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #4A545E">{{chatTitle}}</span>
+          <div style="flex: 1"></div>
+          <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #4A545E"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3.5" y="7" width="9" height="6.5" rx="1.2" stroke="currentColor" stroke-width="1.5"></rect><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" stroke-width="1.5"></path></svg>Only you can see this conversation</span>
+        </div>
+        <sc-if value="{{hasPin}}" hint-placeholder-val="{{true}}">
+          <button type="button" onClick="{{togglePin}}" aria-expanded="{{pinOpen}}" style="flex: none; display: flex; gap: 8px; align-items: flex-start; text-align: left; width: 100%; border: 0; border-bottom: 1px solid #EEF0F2; background: #FAFBFC; padding: 8px 20px; font-size: 12px; color: #3F4852">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" style="flex: none; margin-top: 3px"><path d="M4 1.5h4M5 1.5v3.5L3 7h6L7 5V1.5M6 7v3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            <span style="flex: 1; min-width: 0; white-space: {{pinWrap}}; overflow: hidden; text-overflow: ellipsis"><strong style="font-weight: 600; color: #18212B">{{cur.first}}:</strong> {{pinText}}</span>
+          </button>
+        </sc-if>
+        <div ref="{{setChatEl}}" style="flex: 1; min-height: 0; overflow: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; background: #FAFBFC">
+          <sc-if value="{{chatEmpty}}" hint-placeholder-val="{{false}}">
+            <div style="margin: auto 0; display: flex; flex-direction: column; gap: 12px">
+              <div style="font-size: 17px; font-weight: 600">Ask the governing documents</div>
+              <p style="margin: 0; color: #3F4852; line-height: 1.55">Your question and its answer stay private and are saved under My questions. Every answer links to the clause it came from.</p>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px">
+                <sc-for list="{{starterChips}}" as="ch" hint-placeholder-count="4">
+                  <button type="button" class="sugg" onClick="{{ch.ask}}">{{ch.label}}</button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <sc-for list="{{chat}}" as="m" hint-placeholder-count="3">
+            <sc-if value="{{m.isResWa}}" hint-placeholder-val="{{false}}">
+              <div style="align-self: flex-start; max-width: 88%; display: flex; flex-direction: column; gap: 4px">
+                <span style="font-size: 12px; color: #4A545E">{{m.who}} · WhatsApp · {{m.time}}</span>
+                <div style="background: #E3F2E9; color: #18212B; padding: 10px 14px; border-radius: 4px 12px 12px 12px; line-height: 1.5; white-space: pre-line">{{m.text}}</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{m.isResEmail}}" hint-placeholder-val="{{false}}">
+              <div style="align-self: flex-start; width: 92%; border: 1px solid #DCE0E4; border-radius: 10px; background: #fff; overflow: hidden">
+                <div style="padding: 8px 14px; background: #F3F5FA; font-size: 12px; color: #3F4852; display: flex; flex-direction: column; gap: 2px">
+                  <span><strong style="font-weight: 600; color: #18212B">{{m.who}}</strong> · Email · {{m.time}}</span>
+                  <span>Subject: {{m.subject}}</span>
+                </div>
+                <div style="padding: 10px 14px; line-height: 1.5; white-space: pre-line">{{m.text}}</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{m.isMe}}" hint-placeholder-val="{{false}}">
+              <div style="align-self: flex-end; max-width: 82%; display: flex; flex-direction: column; gap: 4px; align-items: flex-end">
+                <span style="font-size: 12px; color: #4A545E">You</span>
+                <div style="background: #18212B; color: #fff; padding: 10px 14px; border-radius: 12px 4px 12px 12px; line-height: 1.5">{{m.text}}</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{m.isAi}}" hint-placeholder-val="{{true}}">
+              <div class="aicard">
+                <div style="display: flex; align-items: center; gap: 8px">
+                  <span style="width: 22px; height: 22px; border-radius: 6px; background: #FFF3B0; display: inline-flex; align-items: center; justify-content: center"><svg width="13" height="13" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M11 2.5l7 3v5c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9v-5l7-3z" stroke="#18212B" stroke-width="2" stroke-linejoin="round"></path></svg></span>
+                  <span style="font-size: 12px; font-weight: 600">Assistant</span>
+                  <span style="font-size: 12px; color: #4A545E">{{m.meta}}</span>
+                </div>
+                <p style="margin: 0; line-height: 1.55"><sc-for list="{{m.parts}}" as="t" hint-placeholder-count="2"><span>{{t.text}}</span><button type="button" class="{{t.cls}}" hidden="{{t.notCite}}" onClick="{{t.go}}" aria-label="{{t.aria}}">{{t.n}}</button></sc-for></p>
+                <sc-if value="{{m.hasSources}}" hint-placeholder-val="{{true}}">
+                  <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                    <sc-for list="{{m.sources}}" as="s" hint-placeholder-count="2">
+                      <button type="button" class="{{s.cls}}" onClick="{{s.go}}"><span style="font-weight: 600">{{s.n}}</span>{{s.label}}</button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
+                  <sc-if value="{{m.canInclude}}" hint-placeholder-val="{{true}}">
+                    <button type="button" class="incl" onClick="{{m.include}}"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 2.5v9M2.5 7h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>Include in draft</button>
+                  </sc-if>
+                  <sc-if value="{{m.isIncluded}}" hint-placeholder-val="{{false}}">
+                    <span class="indraft"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>In draft</span>
+                  </sc-if>
+                  <sc-if value="{{m.notGrounded}}" hint-placeholder-val="{{false}}">
+                    <span class="pill tone-amber">Not in your documents</span>
+                    <span style="font-size: 12px; color: #4A545E">Can't be added to the draft</span>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-if>
+          </sc-for>
+          <sc-if value="{{chatPending}}" hint-placeholder-val="{{false}}">
+            <div role="status" style="display: flex; align-items: center; gap: 10px; border: 1px solid #E1E4E8; background: #fff; border-radius: 12px; padding: 12px 14px; color: #3F4852; font-size: 13px">
+              <span class="dots" aria-hidden="true"><span></span><span></span><span></span></span>Searching 4 documents · 86 pages
+            </div>
+          </sc-if>
+        </div>
+        <form onSubmit="{{submitQ}}" style="flex: none; padding: 10px 20px 14px; border-top: 1px solid #E1E4E8; background: #fff; display: flex; flex-direction: column; gap: 8px">
+          <sc-if value="{{hasSuggestions}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center">
+              <span style="font-size: 12px; color: #4A545E">Suggested</span>
+              <sc-for list="{{suggestions}}" as="sg" hint-placeholder-count="2">
+                <button type="button" class="sugg" onClick="{{sg.ask}}" disabled="{{chatPending}}">{{sg.label}}</button>
+              </sc-for>
+            </div>
+          </sc-if>
+          <label for="case-ask" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Ask about this case</label>
+          <div class="ask" style="display: flex; align-items: center; gap: 8px; border: 1px solid #CDD3D9; border-radius: 12px; padding: 5px 5px 5px 14px; background: #fff">
+            <input id="case-ask" class="askinput" type="text" value="{{q}}" onChange="{{onQ}}" placeholder="{{askPlaceholder}}" autocomplete="off" style="flex: 1; min-width: 0; border: 0; font: inherit; font-size: 14px; height: 38px; background: transparent; color: #18212B">
+            <button type="submit" class="send" disabled="{{sendDisabled}}" aria-label="Ask"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 13V3M3.5 7.5L8 3l4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <div class="toast" role="status" style="display: {{toastDisplay}}">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6.5" stroke="#4CC38A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>{{toast}}
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"startScreen":{"editor":"enum","options":["queue","answer"],"default":"queue"},"answerDelay":{"editor":"int","min":200,"max":4000,"step":100,"unit":"ms","default":1000},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const cs = {};
+    this.D().cases.forEach((c) => { cs[c.id] = this.initCase(c); });
+    this.state = { screen: 'queue', caseId: null, filter: 'all', search: '', cs: cs, extra: [], names: {}, read: {}, doc: 'ccr', page: 2, activeN: null, jump: 0, pending: null, q: '', editing: false, editText: '', draftH: 340, toast: '', seq: 0 };
+    if (props && props.startScreen === 'answer') Object.assign(this.state, this.openPatch('dan', cs, 0), { read: { dan: true } });
+    this.setDocEl = (el) => { this.docEl = el; };
+    this.setChatEl = (el) => { this.chatEl = el; };
+  }
+
+  componentWillUnmount() { clearTimeout(this.timer); clearTimeout(this.toastTimer); }
+
+  componentDidUpdate(prevProps, prevState) {
+    const s = this.state;
+    if (this.docEl && prevState.jump !== s.jump) {
+      const box = this.docEl;
+      const el = box.querySelector('.clause.on');
+      if (el) {
+        const top = el.getBoundingClientRect().top - box.getBoundingClientRect().top + box.scrollTop - box.clientHeight / 3;
+        box.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      } else box.scrollTo({ top: 0 });
+    } else if (this.docEl && (prevState.page !== s.page || prevState.doc !== s.doc)) {
+      this.docEl.scrollTo({ top: 0 });
+    }
+    if (this.chatEl && s.caseId) {
+      const now = s.cs[s.caseId] ? s.cs[s.caseId].msgs.length : 0;
+      const before = prevState.cs[s.caseId] ? prevState.cs[s.caseId].msgs.length : 0;
+      if (prevState.caseId !== s.caseId) this.chatEl.scrollTo({ top: this.chatEl.scrollHeight });
+      else if (now !== before || prevState.pending !== s.pending) this.chatEl.scrollTo({ top: this.chatEl.scrollHeight, behavior: 'smooth' });
+    }
+  }
+
+  D() {
+    if (this._d) return this._d;
+    const docs = {
+      ccr: { name: 'CC&Rs', short: 'CC&Rs', full: 'Declaration of Covenants, Conditions & Restrictions', count: 48, pages: [2, 14, 16, 18, 24] },
+      rules: { name: 'Rules & Regulations', short: 'Rules', full: 'Rules & Regulations', count: 12, pages: [4, 7] },
+      p2: { name: 'Phase 2 Supplement', short: 'Phase 2 Supp.', full: 'Supplemental Declaration, Phase 2 (The Meadows)', count: 6, pages: [3] },
+      bylaws: { name: 'Bylaws', short: 'Bylaws', full: 'Bylaws of the Association', count: 20, pages: [5] }
+    };
+    const pages = {
+      'ccr:2': { article: 'Declaration', heading: 'Table of Contents', toc: [
+        { label: 'Article I', title: 'Definitions', pg: '3' }, { label: 'Article II', title: 'Property Rights', pg: '6' },
+        { label: 'Article III', title: 'Membership and Voting', pg: '8' }, { label: 'Article IV', title: 'Assessments', pg: '10' },
+        { label: 'Article V', title: 'Maintenance', pg: '12' }, { label: 'Article VI', title: 'Use Restrictions', pg: '14' },
+        { label: 'Article VII', title: 'Architectural Control', pg: '16' }, { label: 'Article VIII', title: 'Insurance', pg: '21' },
+        { label: 'Article IX', title: 'Enforcement', pg: '24' }, { label: 'Article X', title: 'Annexation of Phases', pg: '30' },
+        { label: 'Article XI', title: 'Amendment', pg: '34' }, { label: 'Article XII', title: 'Notice and Hearing', pg: '38' },
+        { label: 'Exhibits', title: 'Legal Description; Phase Maps', pg: '44' }
+      ] },
+      'ccr:14': { article: 'Article VI', heading: 'Use Restrictions', clauses: [
+        { id: '6.1', short: '§6.1', ref: 'Section 6.1', title: 'Residential Use', text: 'Each Lot shall be used solely for single-family residential purposes. No trade or business may be conducted on any Lot except a home office that generates no customer traffic and is not visible from the street.' },
+        { id: '6.2a', short: '§6.2(a)', ref: 'Section 6.2(a)', title: 'Household Pets', text: 'Owners may keep a reasonable number of generally recognized household pets, not to exceed three (3) dogs and cats in the aggregate per Lot, provided they are not kept, bred or maintained for any commercial purpose.' },
+        { id: '6.2b', short: '§6.2(b)', ref: 'Section 6.2(b)', title: 'Leash and Waste', text: 'Pets must be leashed and under the control of a responsible person at all times when outside the Owner’s Lot. Owners shall promptly remove pet waste from the Common Area.' },
+        { id: '6.2c', short: '§6.2(c)', ref: 'Section 6.2(c)', title: 'Dangerous Animals', text: 'No animal that has been declared potentially dangerous or vicious by a court or animal control agency, or that has bitten or attacked a person or another animal within the Properties, shall be kept on any Lot.' },
+        { id: '6.2d', short: '§6.2(d)', ref: 'Section 6.2(d)', title: 'Breed', text: 'Except as expressly provided in a Supplemental Declaration recorded for a particular Phase, no restriction is imposed on any animal on the basis of breed alone.' }
+      ] },
+      'ccr:16': { article: 'Article VII', heading: 'Architectural Control', clauses: [
+        { id: '7.1', short: '§7.1', ref: 'Section 7.1', title: 'Approval Required', text: 'No building, structure, fence, wall, solar energy system or other Improvement shall be erected, placed or altered on any Lot, including any change to the exterior appearance of a Residence, until plans and specifications have been submitted to and approved in writing by the Architectural Review Committee (the “ARC”).' },
+        { id: '7.2', short: '§7.2', ref: 'Section 7.2', title: 'Application and Review', text: 'Applications shall be submitted on the form adopted by the ARC, together with a site plan and product specifications. The ARC shall approve, conditionally approve or deny a complete application in writing within forty-five (45) days of receipt.' },
+        { id: '7.3', short: '§7.3', ref: 'Section 7.3', title: 'Standards', text: 'In reviewing an application, the ARC shall consider the quality of workmanship and materials, harmony of external design with existing structures, and location with respect to topography and finished grade.' }
+      ] },
+      'ccr:18': { article: 'Article VII (continued)', heading: 'Architectural Control', clauses: [
+        { id: '7.4', short: '§7.4', ref: 'Section 7.4', title: 'Solar Energy Systems', text: 'An Owner may install a solar energy system on the roof of the Residence on such Owner’s Lot, subject to prior approval under Section 7.1. Panels shall be mounted flush with or parallel to the roof plane, shall not extend above the roof ridgeline, and all frames, rails and exposed conduit shall be black or match the roof color. The ARC shall not impose any condition that significantly increases the cost of the system or significantly decreases its efficiency, to the extent provided by applicable law.' },
+        { id: '7.5', short: '§7.5', ref: 'Section 7.5', title: 'Antennas and Satellite Dishes', text: 'Satellite dishes one meter or less in diameter are permitted and shall be placed where least visible from the street, to the extent such placement does not impair reception.' },
+        { id: '7.6', short: '§7.6', ref: 'Section 7.6', title: 'Exterior Colors', text: 'Any change in the exterior color of a Residence, including doors, trim and shutters, requires ARC approval, and the new color must be selected from the Association’s approved color palette.' }
+      ] },
+      'ccr:24': { article: 'Article IX', heading: 'Enforcement', clauses: [
+        { id: '9.1', short: '§9.1', ref: 'Section 9.1', title: 'Remedies for Violations', text: 'If an Owner, resident or guest violates this Declaration, any Supplemental Declaration or the Rules, the Board may, after notice and an opportunity for hearing under Section 12.4, impose fines in accordance with the Association’s published fine schedule, suspend use of Common Area facilities, and require the removal of any animal or unapproved Improvement kept or made in violation.' },
+        { id: '9.2', short: '§9.2', ref: 'Section 9.2', title: 'Fine Schedule', text: 'The Board shall adopt and publish a schedule of fines. No fine shall be imposed for a first violation that is corrected within the time stated in a courtesy notice.' },
+        { id: '9.3', short: '§9.3', ref: 'Section 9.3', title: 'Costs of Enforcement', text: 'The Association may recover reasonable costs, including attorneys’ fees, incurred in enforcing this Declaration.' }
+      ] },
+      'rules:4': { article: 'Section 3', heading: 'Vehicles and Parking', clauses: [
+        { id: 'r3.1', short: 'R-3.1', ref: 'Rule 3.1', title: 'Resident Vehicles', text: 'Residents shall park vehicles in their garage or driveway. Garages must remain usable for parking at least one vehicle.' },
+        { id: 'r3.2', short: 'R-3.2', ref: 'Rule 3.2', title: 'Guest Parking', text: 'Guest vehicles may use marked guest spaces for up to seventy-two (72) consecutive hours. From Friday at 5:00 PM until Monday at 9:00 AM, guest vehicles may also park on the street side of Willow Creek Drive, provided a current guest pass is displayed on the dashboard.' },
+        { id: 'r3.3', short: 'R-3.3', ref: 'Rule 3.3', title: 'Extended Guest Stays', text: 'A guest vehicle parked within the community for more than two (2) consecutive nights must be registered with the management office, which will issue a dated pass.' },
+        { id: 'r3.4', short: 'R-3.4', ref: 'Rule 3.4', title: 'Towing', text: 'Vehicles in violation of this Section may be towed at the owner’s expense after a 24-hour notice is placed on the vehicle, except vehicles blocking a fire lane, which may be towed immediately.' }
+      ] },
+      'rules:7': { article: 'Section 6', heading: 'Noise and Nuisance', clauses: [
+        { id: 'r6.1', short: 'R-6.1', ref: 'Rule 6.1', title: 'Quiet Hours', text: 'Quiet hours are 10:00 PM to 7:00 AM daily. During quiet hours, no sound from music, televisions, gatherings, power tools or pets shall be audible inside another Residence.' },
+        { id: 'r6.2', short: 'R-6.2', ref: 'Rule 6.2', title: 'Reporting a Complaint', text: 'A noise complaint during quiet hours may be reported to the after-hours patrol line at [PATROL PHONE] or submitted through the resident portal. The report should identify the address or unit and the time observed. The identity of the reporting resident shall be kept confidential.' },
+        { id: 'r6.3', short: 'R-6.3', ref: 'Rule 6.3', title: 'Enforcement', text: 'A first verified violation results in a courtesy notice. A second violation within twelve (12) months may result in a fine of one hundred dollars ($100) after notice and hearing before the Board.' }
+      ] },
+      'p2:3': { article: 'Exhibit D', heading: 'Phase 2 Animal Restrictions', clauses: [
+        { id: 'd1', short: '§D.1', ref: 'Section D.1', title: 'Applicability', text: 'This Exhibit applies only to Lots 101 through 188 in Phase 2 (“The Meadows”), as shown on Tract Map No. [TRACT NO.], and supplements Article VI of the Declaration.' },
+        { id: 'd2', short: '§D.2', ref: 'Section D.2', title: 'Definitions', text: '“Predominantly” means a dog whose appearance and characteristics conform to the breed standard of a listed breed, or as shown by registration papers or a veterinary record.' },
+        { id: 'd3', short: '§D.3', ref: 'Section D.3', title: 'Restricted Breeds', text: 'No dog of the following breeds, or any dog that is predominantly of such breed, shall be kept on any Lot in Phase 2: Pit Bull Terrier (including the American Pit Bull Terrier, American Staffordshire Terrier and Staffordshire Bull Terrier) and Rottweiler.' },
+        { id: 'd4', short: '§D.4', ref: 'Section D.4', title: 'Existing Animals', text: 'Any dog residing in Phase 2 and registered with the Association before March 1, 2019 may remain on its Lot for the remainder of its natural life.' }
+      ] },
+      'bylaws:5': { article: 'Article IV', heading: 'Meetings of the Board', clauses: [
+        { id: 'b4.1', short: '§4.1', ref: 'Section 4.1', title: 'Regular Meetings', text: 'Regular meetings of the Board shall be held at least quarterly at a time and place fixed by the Board.' },
+        { id: 'b4.2', short: '§4.2', ref: 'Section 4.2', title: 'Notice', text: 'Notice of each meeting shall be posted in the Common Area and on the resident portal at least four (4) days before the meeting.' },
+        { id: 'b4.3', short: '§4.3', ref: 'Section 4.3', title: 'Open Meetings', text: 'All Members may attend meetings of the Board, except executive sessions held to discuss litigation, personnel matters or member discipline.' }
+      ] }
+    };
+    const ans = {
+      dogs: { refs: ['p2:3:d3', 'p2:3:d4', 'ccr:14:6.2d'],
+        chat: 'Not in Phase 2. Pit bull–type dogs and Rottweilers are prohibited on Phase 2 lots {0}. Dogs registered before March 1, 2019 may stay {1}. Phases 1 and 3 have no breed restriction {2}.',
+        draft: 'Lot %LOT% is in Phase 2 (The Meadows), where pit bull–type dogs aren’t allowed {0}. Dogs registered with the Association before March 1, 2019 may stay {1}, but that doesn’t apply to a new puppy.' },
+      dogs_enforce: { refs: ['ccr:24:9.1'],
+        chat: 'The Board can require removal of an animal kept in violation of a Supplemental Declaration, and can fine the owner, after notice and a hearing {0}.',
+        draft: 'If a restricted dog is brought in anyway, the Board can require its removal after notice and a hearing {0}.' },
+      dogs_registry: { refs: [], grounded: false,
+        chat: 'The governing documents don’t record which lots have dogs, so I can’t answer that from them. Check the Association’s pet registry.' },
+      solar: { refs: ['ccr:18:7.4', 'ccr:16:7.1', 'ccr:16:7.2'],
+        chat: 'Allowed, with written ARC approval first {1}. Panels must be flush or parallel to the roof, below the ridgeline, with black or roof-matched frames {0}. The ARC must decide within 45 days of a complete application {2}.',
+        draft: 'Yes, rooftop solar is allowed once the Architectural Review Committee approves it in writing {1}. Panels need to sit flush with or parallel to the roof, stay below the ridgeline, and use black or roof-matched frames {0}. The committee will respond within 45 days of a complete application {2}.' },
+      solar_cost: { refs: ['ccr:18:7.4'],
+        chat: 'Not significantly. The ARC can’t impose conditions that significantly increase the cost or decrease the efficiency of the system {0}.',
+        draft: 'The committee can’t require changes that significantly raise the cost or reduce the efficiency of your system {0}.' },
+      unapproved: { refs: ['ccr:24:9.1'],
+        chat: 'The Board can fine the owner and require the unapproved work to be removed, after notice and a hearing {0}.',
+        draft: 'Work done without approval can lead to fines or a requirement to undo it, after notice and a hearing {0}, so please wait for approval before starting.' },
+      noise: { refs: ['rules:7:r6.1', 'rules:7:r6.2'],
+        chat: 'Quiet hours are 10 PM to 7 AM daily {0}. Complaints go to the after-hours patrol line or the resident portal, with the address and time; the reporter stays confidential {1}.',
+        draft: 'Quiet hours run from 10 PM to 7 AM {0}, so music you can hear inside your home right now isn’t allowed. You can report it to the after-hours patrol line at [PATROL PHONE] or through the resident portal; include the address and time, and your name stays confidential {1}.' },
+      noise_enforce: { refs: ['rules:7:r6.3'],
+        chat: 'A first verified violation gets a courtesy notice. A repeat within 12 months can bring a $100 fine after a Board hearing {0}.',
+        draft: 'Once the violation is verified, the household will receive a courtesy notice, and a repeat within 12 months can lead to a fine {0}.' },
+      noise_fine: { refs: ['rules:7:r6.3'],
+        chat: 'No. A fine is only possible for a second violation within 12 months, and only after notice and a hearing {0}.',
+        draft: 'Fines only apply to repeat violations and require a Board hearing {0}.' },
+      parking: { refs: ['rules:4:r3.2', 'rules:4:r3.3'],
+        chat: 'Guest spaces for up to 72 hours {0}. Fri 5 PM to Mon 9 AM, also the street side of Willow Creek Dr with a pass {0}. More than 2 nights: register with management {1}.',
+        draft: 'Your guests can use the marked guest spaces for up to 72 hours {0}. From Friday 5 PM to Monday 9 AM they can also park on the street side of Willow Creek Drive with a guest pass on the dashboard {0}. Since they’re staying more than two nights, please register the car with the management office {1}.' },
+      parking_tow: { refs: ['rules:4:r3.4'],
+        chat: 'Vehicles parked against the rules can be towed after a 24-hour notice; fire lanes are towed immediately {0}.',
+        draft: 'Cars parked outside these rules can be towed after a 24-hour notice, and right away in a fire lane {0}.' },
+      parking_pass: { refs: ['rules:4:r3.2'],
+        chat: 'R-3.2 only mentions the guest pass for weekend street parking. Marked guest spaces have a 72-hour limit {0}.',
+        draft: 'The guest pass is needed for weekend street parking; the marked guest spaces just have a 72-hour limit {0}.' },
+      paint: { refs: ['ccr:18:7.6'],
+        chat: 'Yes, approval is needed. Any exterior color change, including doors, needs ARC approval and a color from the approved palette {0}.',
+        draft: 'Repainting your front door counts as an exterior color change, so it needs ARC approval, and the color must come from the Association’s approved palette {0}.' },
+      paint_time: { refs: ['ccr:16:7.2'],
+        chat: 'The ARC must approve, conditionally approve or deny a complete application within 45 days {0}.',
+        draft: 'The committee responds within 45 days of a complete application {0}.' },
+      meeting: { refs: ['bylaws:5:b4.2', 'bylaws:5:b4.1'],
+        chat: 'At least 4 days’ notice, posted in the Common Area and on the resident portal {0}. Regular meetings are held at least quarterly {1}.',
+        draft: 'The Board meets at least quarterly {1}, and each meeting is posted on the resident portal at least 4 days ahead {0}, if you’d like to raise this there.' },
+      meeting_open: { refs: ['bylaws:5:b4.3'],
+        chat: 'Yes. All members may attend, except executive sessions about litigation, personnel or member discipline {0}.',
+        draft: 'Board meetings are open to all members, except executive sessions {0}.' },
+      pool: { refs: [], grounded: false,
+        chat: 'None of the 4 documents mention pool resurfacing or a maintenance schedule, so I won’t guess. Board minutes or the reserve study may cover it; they aren’t uploaded.' },
+      none: { refs: [], grounded: false,
+        chat: 'I couldn’t find this in the 4 indexed documents, so I won’t guess. Try rephrasing, or check with the Board.' }
+    };
+    const cases = [
+      { id: 'ken', channel: 'wa', first: 'Ken', name: 'Ken Ito', lot: '22', phase: '1', contact: '+1 555-0122', time: '11:40 PM', ago: 'Yesterday', window: '14h left', urgent: true,
+        text: 'Hi, the house at 24 has had loud music going since 10:30. It’s almost midnight. How do I report this?',
+        initial: 'noise', enforceKey: 'noise_enforce', follow: [{ q: 'What happens to the neighbor?', key: 'noise_enforce' }, { q: 'Can we fine them tonight?', key: 'noise_fine' }] },
+      { id: 'priya', channel: 'wa', first: 'Priya', name: 'Priya Nair', lot: '163', phase: '2', contact: '+1 555-0163', time: '4:05 PM', ago: 'Yesterday', window: '6h left', warn: true,
+        text: 'Hello! I want to paint our front door navy blue. Do I need permission for that?',
+        initial: 'paint', enforceKey: 'unapproved', follow: [{ q: 'How long does approval take?', key: 'paint_time' }, { q: 'What if she paints it without approval?', key: 'unapproved' }] },
+      { id: 'dan', channel: 'wa', first: 'Dan', name: 'Dan Kim', lot: '117', phase: '2', contact: '+1 555-0117', time: '9:12 AM', ago: '12 min ago', window: '23h left',
+        text: 'Hi! Is it ok if we get a pit bull puppy? The kids have been asking for months.',
+        initial: 'dogs', enforceKey: 'dogs_enforce', follow: [{ q: 'What if they get one anyway?', key: 'dogs_enforce' }, { q: 'Does Lot 117 have a dog registered?', key: 'dogs_registry' }] },
+      { id: 'maria', channel: 'email', first: 'Maria', name: 'Maria Lopez', lot: '142', phase: '2', contact: 'maria.lopez@example.com', time: '7:55 AM', ago: '1h ago', subject: 'Solar panels on our roof',
+        text: 'Hello,\nWe’re getting quotes for rooftop solar. Is this allowed, and is there anything we need to do before installation?\nThanks,\nMaria',
+        initial: 'solar', enforceKey: 'unapproved', follow: [{ q: 'Can the ARC require costly changes?', key: 'solar_cost' }, { q: 'What if they install without approval?', key: 'unapproved' }] },
+      { id: 'sam', channel: 'email', first: 'Sam', name: 'Sam Ortiz', lot: '58', phase: '1', contact: 'sam.ortiz@example.com', time: '6:20 PM', ago: 'Yesterday', subject: 'Guests this weekend',
+        text: 'Hi there,\nMy parents are visiting Friday through Monday. Where can they park their car?\nSam',
+        initial: 'parking', enforceKey: 'parking_tow', follow: [{ q: 'What if they park somewhere else?', key: 'parking_tow' }, { q: 'Do they need a pass on weekdays?', key: 'parking_pass' }] },
+      { id: 'chen', channel: 'email', first: 'Rob', name: 'Rob Chen', lot: '31', phase: '3', contact: 'rob.chen@example.com', time: 'Oct 14', ago: '2 days ago', subject: 'Pool resurfacing?', notFound: true,
+        text: 'When is the community pool going to be resurfaced? It’s been closed on and off all summer.',
+        initial: 'pool', hold: 'The resurfacing schedule isn’t set out in our governing documents, so I’ve asked the Board and will get back to you with dates by [DATE].',
+        follow: [{ q: 'When does the Board meet?', key: 'meeting' }, { q: 'Are pool repairs covered in the CC&Rs?', key: 'pool' }] },
+      { id: 'int1', internal: true, first: 'You', name: 'Board meeting notice', time: 'Oct 15', ago: 'Yesterday',
+        text: null, ask: 'How much notice do we need to give for a board meeting?', initial: 'meeting', follow: [{ q: 'Can residents attend?', key: 'meeting_open' }] }
+    ];
+    this._d = { docs, pages, ans, cases, order: ['ccr', 'rules', 'p2', 'bylaws'] };
+    return this._d;
+  }
+
+  parseRef(r) { const p = r.split(':'); return { doc: p[0], page: Number(p[1]), clause: p[2] }; }
+  clauseOf(r) {
+    const x = this.parseRef(r);
+    const pg = this.D().pages[x.doc + ':' + x.page];
+    return (pg && pg.clauses && pg.clauses.find((c) => c.id === x.clause)) || { short: '', title: '', text: '' };
+  }
+  refLabel(r) { const x = this.parseRef(r); return this.clauseOf(r).short + ' · ' + this.D().docs[x.doc].short + ' p. ' + x.page; }
+
+  fill(tpl, nums, c) {
+    return tpl.replace(/\s?\{(\d)\}/g, (m, i) => ' [' + nums[Number(i)] + ']').replace(/\]\s\[/g, '][').replace(/%LOT%/g, c.lot || '').replace(/%FIRST%/g, c.first || '');
+  }
+
+  makeAi(c, cs, key, id) {
+    const a = this.D().ans[key] || this.D().ans.none;
+    const nums = a.refs.map((r) => { let i = cs.cites.indexOf(r); if (i < 0) { cs.cites.push(r); i = cs.cites.length - 1; } return i + 1; });
+    return { id: id, kind: 'ai', key: key, grounded: a.grounded !== false, text: this.fill(a.chat, nums, c), draft: a.draft ? this.fill(a.draft, nums, c) : null, nums: nums };
+  }
+
+  initCase(c) {
+    const cs = { msgs: [], cites: [], body: [], custom: null, included: {}, fresh: null, undo: null, sent: false, saved: false, tone: 'friendly', asked: {}, pinOpen: false, n: 0 };
+    if (c.text) cs.msgs.push({ id: c.id + '-r', kind: 'res', text: c.text });
+    if (c.ask) { cs.msgs.push({ id: c.id + '-q', kind: 'me', text: c.ask }); cs.asked[c.ask] = true; }
+    if (c.initial) {
+      const m = this.makeAi(c, cs, c.initial, c.id + '-a0');
+      cs.msgs.push(m);
+      if (m.grounded && m.draft && !c.internal) { cs.body.push({ src: m.id, text: m.draft }); cs.included[m.id] = true; }
+    }
+    if (c.hold) cs.body.push({ src: 'hold', text: c.hold, hold: true });
+    return cs;
+  }
+
+  allCases() { return this.D().cases.concat(this.state.extra); }
+  caseById(id) {
+    const c = this.allCases().find((x) => x.id === id);
+    if (!c) return null;
+    return this.state.names[id] ? Object.assign({}, c, { name: this.state.names[id] }) : c;
+  }
+
+  statusOf(c, cs) {
+    if (c.internal) return { label: 'My question', cls: 'pill tone-purple' };
+    if (cs.sent) return { label: 'Sent', cls: 'pill tone-green' };
+    if (cs.saved) return { label: 'Draft saved', cls: 'pill tone-gray' };
+    if (c.notFound) return { label: 'Not in documents', cls: 'pill tone-amber' };
+    return { label: 'Draft ready', cls: 'pill tone-blue' };
+  }
+
+  inFilter(c, cs, f) {
+    if (f === 'review') return !c.internal && !cs.sent;
+    if (f === 'notfound') return !!c.notFound && !cs.sent;
+    if (f === 'mine') return !!c.internal;
+    if (f === 'sent') return !c.internal && cs.sent;
+    return true;
+  }
+
+  listIds() {
+    const s = this.state;
+    const t = s.search.trim().toLowerCase();
+    return this.allCases().filter((c) => this.inFilter(c, s.cs[c.id], s.filter)).filter((c) => {
+      if (!t) return true;
+      const nm = s.names[c.id] || c.name;
+      return (nm + ' ' + (c.lot || '') + ' ' + (c.text || '') + ' ' + (c.subject || '')).toLowerCase().indexOf(t) >= 0;
+    }).map((c) => c.id);
+  }
+
+  openPatch(id, cs, jump) {
+    const x = cs[id];
+    const p = { screen: 'answer', caseId: id, editing: false, q: '', jump: jump + 1 };
+    if (x.cites.length) { const r = this.parseRef(x.cites[0]); p.doc = r.doc; p.page = r.page; p.activeN = 1; }
+    else { p.doc = 'ccr'; p.page = 2; p.activeN = null; }
+    return p;
+  }
+
+  open(id) {
+    const s = this.state;
+    this.setState(Object.assign(this.openPatch(id, s.cs, s.jump), { read: Object.assign({}, s.read, { [id]: true }) }));
+  }
+
+  setCase(id, patch, extra) {
+    const s = this.state;
+    this.setState(Object.assign({ cs: Object.assign({}, s.cs, { [id]: Object.assign({}, s.cs[id], patch) }) }, extra || {}));
+  }
+
+  showToast(t) {
+    clearTimeout(this.toastTimer);
+    this.setState({ toast: t });
+    this.toastTimer = setTimeout(() => this.setState({ toast: '' }), 3200);
+  }
+
+  goCite(n) {
+    const s = this.state;
+    const cs = s.cs[s.caseId];
+    const r = cs && cs.cites[n - 1];
+    if (!r) return;
+    const x = this.parseRef(r);
+    this.setState({ doc: x.doc, page: x.page, activeN: n, jump: s.jump + 1 });
+  }
+
+  match(c, q) {
+    const t = q.toLowerCase();
+    const f = (c.follow || []).find((x) => x.q.toLowerCase() === t);
+    if (f) return f.key;
+    if (/regist|on file|have a dog/.test(t)) return 'dogs_registry';
+    if (/anyway|without approval|enforce|violat|penalt|happens to/.test(t)) return c.enforceKey || 'unapproved';
+    if (/\bfine/.test(t)) return c.initial === 'noise' || /noise|music|tonight/.test(t) ? 'noise_fine' : (c.enforceKey || 'unapproved');
+    if (/tow|somewhere else/.test(t)) return 'parking_tow';
+    if (/weekday|\bpass\b/.test(t)) return 'parking_pass';
+    if (/cost|expens|efficien/.test(t)) return 'solar_cost';
+    if (/how long|approval take|how soon|45 days/.test(t)) return 'paint_time';
+    if (/attend|open to/.test(t)) return 'meeting_open';
+    if (/meet|notice|board/.test(t)) return 'meeting';
+    if (/pool|resurfac/.test(t)) return 'pool';
+    if (/pit ?bull|dog|breed|pet|rottweiler|puppy/.test(t)) return 'dogs';
+    if (/solar|panel/.test(t)) return 'solar';
+    if (/noise|loud|music|quiet/.test(t)) return 'noise';
+    if (/park|guest|\bcar\b/.test(t)) return 'parking';
+    if (/paint|colou?r|door/.test(t)) return 'paint';
+    return 'none';
+  }
+
+  ask(text) {
+    const s = this.state;
+    const id = s.caseId;
+    const q = (text || '').trim();
+    if (!id || !q || s.pending) return;
+    const c = this.caseById(id);
+    const cs = s.cs[id];
+    const names = c.internal && c.name === 'New question' ? Object.assign({}, s.names, { [id]: q.length > 48 ? q.slice(0, 46) + '…' : q }) : s.names;
+    this.setCase(id, { msgs: cs.msgs.concat([{ id: id + '-m' + cs.n, kind: 'me', text: q }]), asked: Object.assign({}, cs.asked, { [q]: true }), n: cs.n + 1 }, { pending: id, q: '', names: names });
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      const st = this.state;
+      const cur = st.cs[id];
+      const copy = Object.assign({}, cur, { cites: cur.cites.slice() });
+      const before = copy.cites.length;
+      const m = this.makeAi(this.caseById(id), copy, this.match(c, q), id + '-a' + cur.n);
+      copy.msgs = cur.msgs.concat([m]);
+      copy.n = cur.n + 1;
+      const extra = { pending: null };
+      if (m.nums.length && st.caseId === id) {
+        const n = m.nums[0];
+        const r = this.parseRef(copy.cites[n - 1]);
+        Object.assign(extra, { doc: r.doc, page: r.page, activeN: n, jump: st.jump + 1 });
+      }
+      if (copy.cites.length === before && !m.nums.length) {}
+      this.setState(Object.assign({ cs: Object.assign({}, st.cs, { [id]: copy }) }, extra));
+    }, this.props.answerDelay ?? 1000);
+  }
+
+  greetClose(c, tone) {
+    if (c.channel === 'wa') return tone === 'formal'
+      ? ['Hello ' + c.first + ',', 'Regards,\nWillow Creek Estates HOA Management']
+      : ['Hi ' + c.first + ', thanks for reaching out!', 'Let me know if anything else comes up.\n– Willow Creek Management'];
+    return tone === 'formal'
+      ? ['Dear ' + c.name + ',', 'Sincerely,\nWillow Creek Estates HOA Management']
+      : ['Hi ' + c.first + ',', 'Thanks, and let me know if anything else comes up.\nWillow Creek Management'];
+  }
+
+  paras(c, cs) {
+    if (cs.custom) return cs.custom;
+    const gc = this.greetClose(c, cs.tone);
+    return [{ src: 'greet', text: gc[0] }].concat(cs.body, [{ src: 'close', text: gc[1] }]);
+  }
+
+  include(msgId) {
+    const s = this.state;
+    const id = s.caseId;
+    const cs = s.cs[id];
+    const m = cs.msgs.find((x) => x.id === msgId);
+    if (!m || !m.draft || cs.sent) return;
+    const undo = { body: cs.body, custom: cs.custom, included: cs.included };
+    const patch = { undo: undo, fresh: msgId, included: Object.assign({}, cs.included, { [msgId]: true }) };
+    if (cs.custom) { const arr = cs.custom.slice(); arr.splice(arr.length - 1, 0, { src: msgId, text: m.draft }); patch.custom = arr; }
+    else patch.body = cs.body.concat([{ src: msgId, text: m.draft }]);
+    this.setCase(id, patch, { editing: false });
+    clearTimeout(this.freshTimer);
+    this.freshTimer = setTimeout(() => { const cur = this.state.cs[id]; if (cur && cur.fresh === msgId) this.setCase(id, { fresh: null }); }, 2600);
+  }
+
+  undo() {
+    const s = this.state;
+    const cs = s.cs[s.caseId];
+    if (!cs.undo) return;
+    this.setCase(s.caseId, { body: cs.undo.body, custom: cs.undo.custom, included: cs.undo.included, undo: null, fresh: null });
+  }
+
+  toggleEdit() {
+    const s = this.state;
+    const c = this.caseById(s.caseId);
+    const cs = s.cs[s.caseId];
+    if (!s.editing) { this.setState({ editing: true, editText: this.paras(c, cs).map((p) => p.text).join('\n\n') }); return; }
+    const custom = s.editText.split(/\n\s*\n/).map((t) => t.trim()).filter(Boolean).map((t) => ({ src: 'edit', text: t }));
+    this.setCase(s.caseId, { custom: custom, undo: null, fresh: null }, { editing: false });
+  }
+
+  nextOpenAfter(id) {
+    const list = this.D().cases.filter((c) => !c.internal).map((c) => c.id);
+    const s = this.state;
+    const i = list.indexOf(id);
+    for (let k = 1; k <= list.length; k++) {
+      const cand = list[(i + k) % list.length];
+      if (cand !== id && !s.cs[cand].sent) return cand;
+    }
+    return null;
+  }
+
+  reply() {
+    const s = this.state;
+    const id = s.caseId;
+    const c = this.caseById(id);
+    const sentText = (c.channel === 'wa' ? 'Reply sent to ' + c.name + ' on WhatsApp' : 'Email sent to ' + c.name);
+    const cs = Object.assign({}, s.cs[id], { sent: true, sentAt: '9:26 AM', undo: null, fresh: null });
+    const all = Object.assign({}, s.cs, { [id]: cs });
+    this.setState({ cs: all, editing: false });
+    const next = (() => { const list = this.D().cases.filter((x) => !x.internal).map((x) => x.id); const i = list.indexOf(id); for (let k = 1; k <= list.length; k++) { const cand = list[(i + k) % list.length]; if (cand !== id && !all[cand].sent) return cand; } return null; })();
+    if (next) {
+      this.setState(Object.assign(this.openPatch(next, all, this.state.jump), { read: Object.assign({}, s.read, { [next]: true }) }));
+      this.showToast(sentText + '. Opened the next message.');
+    } else {
+      this.setState({ screen: 'queue', caseId: null });
+      this.showToast(sentText + '. Inbox is clear.');
+    }
+  }
+
+  newQuestion() {
+    const s = this.state;
+    const id = 'new' + (s.seq + 1);
+    const c = { id: id, internal: true, first: 'You', name: 'New question', time: 'Now', ago: 'just now', text: null, initial: null, follow: [] };
+    const cs = Object.assign({}, s.cs, { [id]: this.initCase(c) });
+    this.setState(Object.assign({ extra: [c].concat(s.extra), cs: cs, seq: s.seq + 1, read: Object.assign({}, s.read, { [id]: true }) }, this.openPatch(id, cs, s.jump)));
+  }
+
+  partsOf(text, keyPrefix) {
+    const s = this.state;
+    return text.split(/(\[\d+\])/).filter((x) => x !== '').map((x) => {
+      const mm = /^\[(\d+)\]$/.exec(x);
+      if (!mm) return { text: x, notCite: true, n: '', cls: 'cite', aria: '', go: null };
+      const n = Number(mm[1]);
+      return { text: '', notCite: false, n: n, cls: 'cite' + (s.activeN === n ? ' on' : ''), aria: 'Show source ' + n + ' in the document', go: () => this.goCite(n) };
+    });
+  }
+
+  renderVals() {
+    const s = this.state;
+    const d = this.D();
+    const all = this.allCases();
+    const openCount = all.filter((c) => !c.internal && !s.cs[c.id].sent).length;
+
+    const filterDefs = [['all', 'All'], ['review', 'Needs reply'], ['notfound', 'Not in documents'], ['mine', 'My questions'], ['sent', 'Sent']];
+    const filters = filterDefs.map((f) => ({
+      label: f[1], count: all.filter((c) => this.inFilter(c, s.cs[c.id], f[0])).length,
+      cls: 'ftab' + (s.filter === f[0] ? ' on' : ''), selected: s.filter === f[0] ? 'true' : 'false',
+      pick: () => this.setState({ filter: f[0] })
+    }));
+    const ids = this.listIds();
+    const rows = ids.map((id) => {
+      const c = this.caseById(id);
+      const cs = s.cs[id];
+      const st = this.statusOf(c, cs);
+      const isWa = c.channel === 'wa', isEmail = c.channel === 'email', isInternal = !!c.internal;
+      const firstQ = c.text || c.ask || (cs.msgs.find((m) => m.kind === 'me') || {}).text || 'No question yet';
+      return {
+        cls: 'qrow' + (s.read[id] ? '' : ' unread'), dotCls: 'udot' + (s.read[id] || isInternal ? ' read' : ''),
+        chCls: 'ch ' + (isWa ? 'ch-wa' : isEmail ? 'ch-email' : 'ch-int'), isWa, isEmail, isInternal,
+        channelLabel: isWa ? 'WhatsApp' : isEmail ? 'Email' : 'Internal question',
+        name: c.name, where: isInternal ? 'Internal · only you' : 'Lot ' + c.lot + ' · Phase ' + c.phase,
+        hasSubject: !!c.subject, subject: c.subject || '', snippet: firstQ.replace(/\s*\n\s*/g, ' '),
+        status: st.label, pillCls: st.cls, urgent: !!c.urgent && !cs.sent,
+        cited: cs.cites.length ? cs.cites.length + (cs.cites.length === 1 ? ' clause' : ' clauses') : '—',
+        time: c.time, ago: c.ago,
+        window: cs.sent ? 'Replied' : (c.window || '—'), winCls: 'win' + (c.warn && !cs.sent ? ' warn' : ''),
+        open: () => this.open(id)
+      };
+    });
+    const sentCount = all.filter((c) => !c.internal && s.cs[c.id].sent).length;
+
+    const base = {
+      openCount, filters, rows, noRows: rows.length === 0,
+      queueSummary: openCount + ' waiting for a reply · ' + sentCount + ' sent today',
+      queueDisplay: s.screen === 'queue' ? 'block' : 'none',
+      answerDisplay: s.screen === 'answer' ? 'flex' : 'none',
+      search: s.search, onSearch: (e) => this.setState({ search: e.target.value }),
+      newQuestion: () => this.newQuestion(),
+      goQueue: () => this.setState({ screen: 'queue', caseId: null, editing: false }),
+      toast: s.toast, toastDisplay: s.toast ? 'flex' : 'none',
+      setDocEl: this.setDocEl, setChatEl: this.setChatEl
+    };
+
+    // Answer screen values (safe defaults when no case is open)
+    const id = s.caseId;
+    const c = id ? this.caseById(id) : null;
+    const cs = id ? s.cs[id] : null;
+    const cites = cs ? cs.cites : [];
+    const isInternal = !!(c && c.internal);
+    const hasDraft = !!c && !isInternal;
+
+    const listForNav = ids.indexOf(id) >= 0 ? ids : all.map((x) => x.id);
+    const pos = listForNav.indexOf(id);
+
+    const st = c ? this.statusOf(c, cs) : { label: '', cls: '' };
+    const cur = c ? {
+      name: c.name, first: c.first,
+      detail: isInternal ? 'Internal question · not sent to anyone' : 'Lot ' + c.lot + ' · Phase ' + c.phase + ' · ' + (c.channel === 'wa' ? 'WhatsApp ' : 'Email ') + c.contact + ' · matched to resident roster',
+      chCls: 'ch ' + (c.channel === 'wa' ? 'ch-wa' : c.channel === 'email' ? 'ch-email' : 'ch-int'),
+      isWa: c.channel === 'wa', isEmail: c.channel === 'email', isInternal: isInternal,
+      status: st.label, pillCls: st.cls,
+      hasWindow: c.channel === 'wa' && !cs.sent, window: c.window || '', winCls: 'win' + (c.warn ? ' warn' : '')
+    } : { name: '', first: '', detail: '', chCls: 'ch', isWa: false, isEmail: false, isInternal: false, status: '', pillCls: '', hasWindow: false, window: '', winCls: 'win' };
+
+    // Viewer
+    const tabs = d.order.map((k) => ({
+      name: d.docs[k].name, cls: 'tab' + (k === s.doc ? ' on' : ''),
+      cited: cites.some((r) => r.indexOf(k + ':') === 0),
+      pick: () => this.setState({ doc: k, page: d.docs[k].pages[0] })
+    }));
+    const raw = d.pages[s.doc + ':' + s.page];
+    const page = {
+      article: raw.article, heading: raw.heading, isToc: !!raw.toc, isBody: !raw.toc, toc: raw.toc || [],
+      clauses: (raw.clauses || []).map((cl) => {
+        const idx = cites.indexOf(s.doc + ':' + s.page + ':' + cl.id);
+        return { ref: cl.ref, title: cl.title, text: cl.text, n: idx + 1, hasMarker: idx >= 0, cls: 'clause' + (idx >= 0 ? ' hl' : '') + (idx >= 0 && idx + 1 === s.activeN ? ' on' : '') };
+      })
+    };
+    const dp = d.docs[s.doc].pages;
+    const pIdx = dp.indexOf(s.page);
+    const stripSources = cites.map((r, i) => ({ n: i + 1, label: this.refLabel(r), cls: 'srcchip' + (s.activeN === i + 1 ? ' on' : ''), go: () => this.goCite(i + 1) }));
+
+    // Draft
+    let draftParas = [], checkText = '', checkCls = '', emailSubject = '';
+    if (hasDraft) {
+      const ps = this.paras(c, cs);
+      draftParas = ps.map((p) => ({ cls: 'dpara' + (cs.fresh && p.src === cs.fresh ? ' fresh' : '') + (p.hold ? ' hold' : ''), parts: this.partsOf(p.text) }));
+      const bodyPs = cs.custom ? cs.custom.slice(1, -1) : cs.body;
+      const uncited = bodyPs.filter((p) => !p.hold && !/\[\d+\]/.test(p.text)).length;
+      const anyCite = bodyPs.some((p) => /\[\d+\]/.test(p.text));
+      const hold = bodyPs.some((p) => p.hold);
+      if (cs.sent) { checkText = 'Sent ' + cs.sentAt + ' · logged with citations'; checkCls = 'pill tone-green'; }
+      else if (uncited > 0) { checkText = uncited + (uncited === 1 ? ' paragraph has' : ' paragraphs have') + ' no citation'; checkCls = 'pill tone-amber'; }
+      else if (hold && !anyCite) { checkText = 'Holding reply · no rule stated'; checkCls = 'pill tone-gray'; }
+      else { checkText = '✓ Every statement cited'; checkCls = 'pill tone-green'; }
+      emailSubject = 'Re: ' + (c.subject || '');
+    }
+
+    // Chat
+    const chat = cs ? cs.msgs.map((m) => {
+      if (m.kind === 'res') return { isResWa: c.channel === 'wa', isResEmail: c.channel === 'email', isMe: false, isAi: false, who: c.name, time: c.time, subject: c.subject || '', text: m.text };
+      if (m.kind === 'me') return { isResWa: false, isResEmail: false, isMe: true, isAi: false, text: m.text };
+      const included = !!cs.included[m.id];
+      return {
+        isResWa: false, isResEmail: false, isMe: false, isAi: true,
+        meta: m.grounded ? (m.nums.length === 1 ? 'Grounded in 1 clause' : 'Grounded in ' + m.nums.length + ' clauses') : 'No matching clause',
+        parts: this.partsOf(m.text),
+        hasSources: m.nums.length > 0,
+        sources: m.nums.filter((n, i, a) => a.indexOf(n) === i).map((n) => ({ n: n, label: this.refLabel(cs.cites[n - 1]), cls: 'srcchip' + (s.activeN === n ? ' on' : ''), go: () => this.goCite(n) })),
+        canInclude: hasDraft && m.grounded && !!m.draft && !included && !cs.sent,
+        isIncluded: hasDraft && included,
+        notGrounded: !m.grounded,
+        include: () => this.include(m.id)
+      };
+    }) : [];
+    const suggestions = c ? (c.follow || []).filter((f) => !cs.asked[f.q]).map((f) => ({ label: f.q, ask: () => this.ask(f.q) })) : [];
+    const starter = ['Can I install solar panels on my roof?', 'What are the weekend guest parking rules?', 'How do I report a noise complaint after 10 PM?', 'Are aggressive dog breeds restricted?'];
+
+    return Object.assign(base, {
+      cur,
+      caseIndex: pos >= 0 ? (pos + 1) + ' of ' + listForNav.length : '',
+      prevCaseDisabled: pos <= 0, nextCaseDisabled: pos < 0 || pos >= listForNav.length - 1,
+      prevCase: () => { if (pos > 0) this.open(listForNav[pos - 1]); },
+      nextCase: () => { if (pos >= 0 && pos < listForNav.length - 1) this.open(listForNav[pos + 1]); },
+      tabs, page, pageNum: s.page, pageCount: d.docs[s.doc].count, docFull: d.docs[s.doc].full,
+      sheetLabel: d.docs[s.doc].name + ', page ' + s.page,
+      prevPageDisabled: pIdx <= 0, nextPageDisabled: pIdx >= dp.length - 1,
+      prevPage: () => { if (pIdx > 0) this.setState({ page: dp[pIdx - 1] }); },
+      nextPage: () => { if (pIdx < dp.length - 1) this.setState({ page: dp[pIdx + 1] }); },
+      showSources: cites.length > 0, showNoSources: cites.length === 0, stripSources,
+
+      draftDisplay: hasDraft ? 'flex' : 'none', draftFlex: hasDraft ? 'flex' : 'none', draftH: s.draftH,
+      draftTitle: cs && cs.sent ? 'Sent reply' : 'Draft reply',
+      draftChannel: c && c.channel === 'wa' ? 'WhatsApp' : 'Email',
+      draftChannelCls: 'pill ' + (c && c.channel === 'wa' ? 'tone-green' : 'tone-blue'),
+      isEmailDraft: !!c && c.channel === 'email', emailTo: c ? c.name + ' <' + (c.contact || '') + '>' : '', emailSubject,
+      hasUndo: !!(cs && cs.undo), undo: () => this.undo(),
+      notSent: !!cs && !cs.sent,
+      editing: s.editing, notEditing: !s.editing, editLabel: s.editing ? 'Done' : 'Edit',
+      editText: s.editText, onEditText: (e) => this.setState({ editText: e.target.value }),
+      toggleEdit: () => this.toggleEdit(),
+      draftParas, checkText, checkCls,
+      friendlyCls: 'seg' + (cs && cs.tone === 'friendly' ? ' on' : ''), formalCls: 'seg' + (cs && cs.tone === 'formal' ? ' on' : ''),
+      toneDisabled: !!(cs && cs.custom) || s.editing,
+      setFriendly: () => this.setCase(id, { tone: 'friendly' }), setFormal: () => this.setCase(id, { tone: 'formal' }),
+      save: () => { this.setCase(id, { saved: true }); this.showToast('Draft saved'); },
+      reply: () => this.reply(),
+      replyLabel: c && c.channel === 'wa' ? 'Reply on WhatsApp' : 'Send email',
+      startDrag: (e) => { this.drag = { y: e.clientY, h: this.state.draftH }; if (e.currentTarget.setPointerCapture) e.currentTarget.setPointerCapture(e.pointerId); },
+      moveDrag: (e) => { if (!this.drag) return; const h = Math.max(170, Math.min(620, this.drag.h + e.clientY - this.drag.y)); this.setState({ draftH: h }); },
+      endDrag: () => { this.drag = null; },
+      dragKey: (e) => { if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { e.preventDefault(); const h = Math.max(170, Math.min(620, this.state.draftH + (e.key === 'ArrowDown' ? 24 : -24))); this.setState({ draftH: h }); } },
+
+      chatTitle: isInternal ? 'Your question' : 'Case conversation',
+      hasPin: !!(c && c.text), pinOpen: !!(cs && cs.pinOpen), pinWrap: cs && cs.pinOpen ? 'pre-line' : 'nowrap',
+      pinText: c && c.text ? (cs.pinOpen ? c.text : c.text.replace(/\s*\n\s*/g, ' ')) : '',
+      togglePin: () => this.setCase(id, { pinOpen: !cs.pinOpen }),
+      chat, chatEmpty: !!cs && cs.msgs.length === 0 && s.pending !== id,
+      starterChips: starter.map((q) => ({ label: q, ask: () => this.ask(q) })),
+      chatPending: !!id && s.pending === id,
+      suggestions, hasSuggestions: suggestions.length > 0,
+      q: s.q, onQ: (e) => this.setState({ q: e.target.value }),
+      askPlaceholder: isInternal ? 'Ask the governing documents…' : 'Ask about this case…',
+      sendDisabled: !!s.pending || !s.q.trim(),
+      submitQ: (e) => { if (e && e.preventDefault) e.preventDefault(); this.ask(this.state.q); }
+    });
+  }
+}
+</script>
+</body>
+</html>
