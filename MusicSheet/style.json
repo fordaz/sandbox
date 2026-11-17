@@ -1,0 +1,18 @@
+{
+  "diagrams": { "show": "none" },
+  "pdf": {
+    "papersize": "letter",
+    "formats": {
+      "first": {
+        "title":    [ "", "%{title}", "" ],
+        "subtitle": [ "%{subtitle}", "", "%{key|Key: %{}}%{tempo| · %{} BPM}" ]
+      }
+    },
+    "fonts": {
+      "title":   { "name": "Helvetica-Bold", "size": 18 },
+      "text":    { "name": "Helvetica", "size": 13 },
+      "chord":   { "name": "Helvetica-Bold", "size": 12, "color": "#1f4e9e" },
+      "comment": { "name": "Helvetica-Bold", "size": 12, "background": "#e8e8e8" }
+    }
+  }
+}
